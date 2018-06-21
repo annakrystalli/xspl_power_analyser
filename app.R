@@ -8,109 +8,113 @@
 #
 library(ggthemes)
 library(shiny)
-library(pwr)
 library(tidyverse)
 library(plotly)
 library(shinydashboard)
 
-# effect = d
-# group_n = n
+load(here::here("data", "powersim.rda"))
 
-#range of effect sizes
-d <- seq(.1,1,.1)
+p <- list(y = "power",
+          x_choices = setNames(c("effect_size", "n"), c("effect size", "sample size")),
+          z_choices = purrr::map(c("bin", "n"), ~ sort(unique(powersim[[.x]]))) %>% 
+              setNames(c("effect_size", "n"))
+)
 
-# sample values
-n <- seq(10,110,10)
-
-df <- expand.grid(d = d, n = n) %>% as_tibble %>% 
-    mutate(pwr = pwr.t.test(n, d, sig.level = 0.05, power = NULL,
-                            type="two.sample",
-                            alternative="two.sided")$power,
-           d = as.factor(d))
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(skin = "black",
-    dashboardHeader(title = "Power estimation for 2 sample t-test",
-                    titleWidth = 450),
-    dashboardSidebar(
-        sidebarMenu(
-            menuItem("Dashboard", tabName = "dashboard"),
-            menuItem("Raw data", tabName = "rawdata")
-        ),
-        sliderInput("d",
-                    "effect size:",
-                    min = 0,
-                    max = 1,
-                    step = 0.1,
-                    value = 0.5)),
-    dashboardBody(
-        tabItems(
-            tabItem("dashboard",
-                    fluidRow(valueBoxOutput("n", width = 5),
-                             valueBoxOutput("savings", width = 5)),
-                    sliderInput("pwr",
-                                "power:",
-                                min = 0,
-                                max = 1,
-                                step = 0.1,
-                                value = 0.8),
-                    fluidRow(box(title = "Power trend ~ effect size", background = "teal", solidHeader = TRUE,
-                        plotOutput("plot"), width = 10))
-                    ),
-            
-            tabItem("rawdata")
-            )
-        )
-    )
-    
-    
-    
- 
+                    dashboardHeader(title = "Power estimation for 2 sample t-test",
+                                    titleWidth = 450),
+                    dashboardSidebar(
+                        sidebarMenu(
+                            menuItem("Dashboard", tabName = "dashboard"),
+                            menuItem("Raw data", tabName = "rawdata")
+                        ),
+                        selectInput("x", "select x axis variable", choices = p$x_choices,
+                                    selected = p$x_choices["sample size"])),
+                    dashboardBody(
+                        tabItems(
+                            tabItem("dashboard",
+                                    fluidRow(uiOutput("z_slider"),
+                                             box(title = "Power trend ~ effect size", background = "teal", solidHeader = TRUE,
+                                                 plotOutput("plot"), width = 10)),
+                                    fluidRow(valueBoxOutput("n", width = 5),
+                                             valueBoxOutput("savings", width = 5)))),
+                        tabItem("rawdata")
+                    )
+)
+
+
+
+
+
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
     
-
+    get_z <- reactive({
+        p$x_choices[input$x  != p$x_choices]
+    })
+    
+    subset_dat <- reactive({
+        col <- if(v$z == "effect_size"){"bin"}else{v$z}
+        powersim %>%  
+            filter((!!rlang::sym(col)) == v$z_value)
+    })
+    
+    v <- reactiveValues(
+        z = "effect_size",
+        z_choices = p$z_choices[["effect_size"]],
+        z_value = 3
+    )
+    
+    observe({
+        v$z <- get_z()
+        v$z_choices <- p$z_choices[[v$z]]
+    })
+    
+    output$z_slider <- renderUI({
+        selectInput("z_value", paste("select", names(v$z)), choices = v$z_choices)
+    })
     
     output$plot <- renderPlot({
+     
         # generate bins based on input$bins from ui.R
+        v$z_value <- input$z_value
         
-        p <- df %>% filter(d == input$d) %>% 
-            ggplot(aes(n, pwr, group = d, color = d)) + geom_line() +
+        p <- subset_dat() %>%
+            ggplot2::ggplot(aes_(as.name(input$x), as.name(p$y),
+                                 colour = as.name("condition"))) + 
+            geom_point(alpha = 0.5) + geom_line(alpha = 0.5) +
             labs(title ="",
                  subtitle = "",
                  color = "effect size") +
-            xlab("Sample Size IN EACH GROUP (n)") +
-            ylab("Power")  + ylim(0, max(d)) +
             theme_hc(bgcolor = "darkunica") +
             scale_colour_hc("darkunica") + 
             theme(axis.text = element_text(colour = "white"),
-                  panel.grid.major = element_line(colour = "grey50")) +
-            geom_vline(xintercept = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
-                                               power=input$pwr, type="two.sample",
-                                               alternative="two.sided")$n %>% as.integer(),
-                       colour = "white")
-        
-        
-        #print(ggplotly(p, tooltip = c("n", "d", "pwr")))
-        
-        print(p)
+                  panel.grid.major = element_line(colour = "grey50")) 
+            #geom_vline(xintercept = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
+            #                                  power=input$pwr, type="two.sample",
+            #                                 alternative="two.sided")$n %>% as.integer(),
+            #          colour = "white")
+            
+            
+            #print(ggplotly(p, tooltip = c("n", "d", "pwr")))
+            
+            print(p)
         
         
     })
     output$n <- renderValueBox({
-        valueBox(subtitle = "min n required for EACH group", color  = "teal", 
-                 value = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
-                            power=input$pwr, type="two.sample",
-                            alternative="two.sided")$n %>% as.integer(),
-            icon = icon("users")
+        valueBox(subtitle = "total minimum sample size required", color  = "teal", 
+                 value = 56,
+                 icon = icon("users")
         )
     })
     output$savings <- renderValueBox({
         valueBox(subtitle = "Savings", color  = "lime", 
-                 value = paste("£", pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
-                                    power=input$pwr, type="two.sample",
-                                    alternative="two.sided")$n %>% as.integer()*0.2 *100),
+                 value = paste("£", 10),
                  icon = icon("money")
         )
     })
