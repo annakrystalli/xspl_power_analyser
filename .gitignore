@@ -1,0 +1,7 @@
+packrat/lib*/
+.Rproj.user
+inst/doc
+dev/
+data-raw/summary.csv
+data
+.DS_Store
