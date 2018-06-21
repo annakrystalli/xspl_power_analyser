@@ -1,0 +1,127 @@
+---
+title: "Powersim Data Summary"
+author: "Anna Krystalli"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Powersim Data Summary}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width=8, fig.height=5
+)
+```
+#### libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+library(viridis)
+library(tidyr)
+```
+
+#### plotting params
+```{r}
+
+alpha <- 0.3
+size <- 2.7
+```
+
+## data
+
+`powersim` represents a tidy processed versions of `summary.csv`, an initial sample of simulation results. The following figures highlighted the limitations of the data driving the current app prototype.
+
+
+```{r}
+load(here::here("data", "powersim.rda"))
+powersim
+```
+
+Unique `n` bins, bin n = **`r powersim$n %>% unique %>% sort %>% length`**.
+```{r}
+powersim$n %>% unique %>% sort
+```
+
+Unique `effect_size` bins
+Here lies the problem of selecting a `z_value` for `effect_size`
+```{r}
+powersim$effect_size %>% unique %>% sort
+```
+
+However, each `condition` & `n` combination has the same number of `effect_size` bins, n = **`r powersim %>% group_by(condition, n) %>% count() %>% pull(nn) %>% unique()`**.  
+```{r}
+powersim %>% group_by(condition, n) %>% count()
+```
+
+```{r}
+wide <- powersim %>% spread(key = bin, value = power) %>% group_by(condition, n) 
+wide %>% count() %>% group_by(condition) %>% summarise(samples = sum(nn))
+ 
+```
+
+## predictors
+
+### `effect_size` vs `n`
+
+Shows the grid of sampling in predictor space. Drives the binning of `z_values` into options avalaible to the user.
+
+```{r}
+powersim %>% ggplot(aes(x=effect_size, y = n, colour = power)) +
+    geom_point(alpha = alpha, size = size) + scale_color_viridis() +
+    geom_jitter(alpha = alpha, size = size) + facet_grid(~condition) + theme_bw() 
+```
+
+### `effect_size` sampling bins
+
+Currently uneven and with little overlap of range. Problematic for plotting on the same axes. Currently handled through bins.
+
+```{r}
+powersim %>% ggplot(aes(x=effect_size, fill = condition, colour = condition)) +
+    geom_histogram(alpha = alpha, position = "dodge")
+```
+
+### `n` sampling bins
+Complete coverage of all bins of `n` across all conditions.
+
+```{r}
+powersim %>% ggplot(aes(x=n, fill = condition, colour = condition)) +
+    geom_histogram(alpha = alpha, position = "dodge")
+
+```
+
+## response: `power`
+
+### `power` vs `effect_size` 
+```{r}
+
+powersim %>% ggplot(aes(x=effect_size, y = power, colour = n)) +
+    geom_point(alpha =alpha, size = size) + 
+    scale_color_viridis() +
+    geom_jitter(alpha = alpha, size = size) + facet_grid(~condition) + theme_bw() 
+
+```
+
+### `power` vs `n` 
+```{r}
+powersim %>% ggplot(aes(x=n, y = power, colour = effect_size)) +
+    geom_point(alpha = alpha, size = size) + 
+    scale_color_viridis() +
+    geom_jitter(alpha = alpha, size = size) + facet_grid(~condition) + theme_bw() 
+```
+
+### `power` distribution
+
+```{r}
+powersim %>% ggplot(aes(x=power, fill = condition, colour = condition)) +
+    geom_density(alpha = alpha) + coord_flip()
+
+
+```
+
+
+
+
