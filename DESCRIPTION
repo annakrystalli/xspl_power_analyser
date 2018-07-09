@@ -1,0 +1,18 @@
+Package: powerAnalyser
+Version: 0.0.0.9000
+Title: What the Package Does (One Line, Title Case)
+Description: What the package does (one paragraph).
+Authors@R: person("First", "Last", , "first.last@example.com", c("aut", "cre"))
+License: What license it uses
+Encoding: UTF-8
+LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown,
+    viridis,
+    tidyr
+VignetteBuilder: knitr
+Imports: 
+    dplyr,
+    ggplot2
+RoxygenNote: 6.0.1
