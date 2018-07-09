@@ -3,5 +3,5 @@ packrat/lib*/
 inst/doc
 dev/
 data-raw/summary.csv
-data
+! data
 .DS_Store
