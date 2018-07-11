@@ -9,10 +9,13 @@ LazyData: true
 Suggests: 
     knitr,
     rmarkdown,
-    viridis,
-    tidyr
+    viridis
 VignetteBuilder: knitr
 Imports: 
-    dplyr,
-    ggplot2
+    usethis,
+    plotly,
+    devtools,
+    ggthemes,
+    tidyverse,
+    here
 RoxygenNote: 6.0.1
