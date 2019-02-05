@@ -16,7 +16,7 @@ load(here::here("data", "powersim.rda"))
 
 p <- list(y = "power",
           x_choices = setNames(c("effect_size", "n"), c("effect size", "sample size")),
-          z_choices = purrr::map(c("bin", "n"), ~ sort(unique(powersim[[.x]]))) %>% 
+          z_choices = purrr::map(c("effect_size", "n"), ~ sort(unique(powersim[[.x]]))) %>% 
               setNames(c("effect_size", "n"))
 )
 
@@ -58,7 +58,7 @@ server <- function(input, output) {
     })
     
     subset_dat <- reactive({
-        col <- if(v$z == "effect_size"){"bin"}else{v$z}
+        col <- if(v$z == "effect_size"){v$z}else{v$z}
         powersim %>%  
             filter((!!rlang::sym(col)) == v$z_value)
     })
@@ -89,11 +89,12 @@ server <- function(input, output) {
             geom_point(alpha = 1) + geom_line(alpha = 1,size=3) +
             labs(title ="",
                  subtitle = "",
-                 color = "effect size") +
-            theme_hc(bgcolor = "darkunica") +
+                 color = "Measure") +
+            #theme_hc(bgcolor = "darkunica") +
             scale_colour_hc("darkunica") + 
             theme(axis.text = element_text(colour = "white",size=12),
-                  panel.grid.major = element_line(colour = "grey50")) 
+                  panel.grid.major = element_line(colour = "grey50")#, legend.position="right"
+                  ) 
             #geom_vline(xintercept = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
             #                                  power=input$pwr, type="two.sample",
             #                                 alternative="two.sided")$n %>% as.integer(),
