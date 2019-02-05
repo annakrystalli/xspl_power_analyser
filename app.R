@@ -36,7 +36,7 @@ ui <- dashboardPage(skin = "black",
                         tabItems(
                             tabItem("dashboard",
                                     fluidRow(uiOutput("z_slider"),
-                                             box(title = "Power trend ~ effect size", background = "teal", solidHeader = TRUE,
+                                             box(title = "Statistical power functions for different measures", background = "teal", solidHeader = TRUE,
                                                  plotOutput("plot"), width = 10)),
                                     fluidRow(valueBoxOutput("n", width = 5),
                                              valueBoxOutput("savings", width = 5)))),
@@ -86,13 +86,13 @@ server <- function(input, output) {
         p <- subset_dat() %>%
             ggplot2::ggplot(aes_(as.name(input$x), as.name(p$y),
                                  colour = as.name("condition"))) + 
-            geom_point(alpha = 0.5) + geom_line(alpha = 0.5) +
+            geom_point(alpha = 1) + geom_line(alpha = 1,size=3) +
             labs(title ="",
                  subtitle = "",
                  color = "effect size") +
             theme_hc(bgcolor = "darkunica") +
             scale_colour_hc("darkunica") + 
-            theme(axis.text = element_text(colour = "white"),
+            theme(axis.text = element_text(colour = "white",size=12),
                   panel.grid.major = element_line(colour = "grey50")) 
             #geom_vline(xintercept = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
             #                                  power=input$pwr, type="two.sample",
