@@ -1,0 +1,13 @@
+name: xspl_power_analyser2
+title:
+username:
+account: tomstafford
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 772391
+bundleId: 1922117
+url: https://tomstafford.shinyapps.io/xspl_power_analyser2/
+when: 1551958378.36011
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: DESCRIPTION|NAMESPACE|_pkgdown.yml|.Rbuildignore|README.md|data-raw/create-app-data.R|data-raw/summary.csv|docs/authors.html|docs/docsearch.css|docs/docsearch.js|docs/index.html|docs/link.svg|docs/pkgdown.css|docs/pkgdown.js|docs/pkgdown.yml|docs/articles/data-properties.html|docs/articles/index.html|docs/articles/data-properties_files/figure-html/unnamed-chunk-10-1.png|docs/articles/data-properties_files/figure-html/unnamed-chunk-11-1.png|docs/articles/data-properties_files/figure-html/unnamed-chunk-12-1.png|docs/articles/data-properties_files/figure-html/unnamed-chunk-13-1.png|docs/articles/data-properties_files/figure-html/unnamed-chunk-8-1.png|docs/articles/data-properties_files/figure-html/unnamed-chunk-9-1.png|docs/reference/index.html|docs/reference/powerAnalyser-package.html|man/powerAnalyser-package.Rd|R/server-utils.R|vignettes/data-properties.Rmd|vignettes/.gitignore

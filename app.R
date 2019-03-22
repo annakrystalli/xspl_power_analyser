@@ -35,18 +35,14 @@ ui <- dashboardPage(skin = "black",
                     dashboardBody(
                         tabItems(
                             tabItem("dashboard",
-                                    fluidRow(uiOutput("z_slider"),
-                                             box(title = "Statistical power functions for different measures", background = "teal", solidHeader = TRUE,
+                                    fluidRow(box(title = "Statistical power functions for different measures", background = "teal", solidHeader = TRUE,
+                                                 uiOutput("z_slider"),
                                                  plotOutput("plot"), width = 10)),
                                     fluidRow(valueBoxOutput("n", width = 5),
                                              valueBoxOutput("savings", width = 5)))),
                         tabItem("rawdata")
                     )
 )
-
-
-
-
 
 
 

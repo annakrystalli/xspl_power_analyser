@@ -1,0 +1,12 @@
+name: xspl_power_analyser
+title: xspl_power_analyser
+username:
+account: sheffield-university
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 752872
+bundleId: 1908293
+url: https://sheffield-university.shinyapps.io/xspl_power_analyser/
+when: 1551418638.62713
+asMultiple: FALSE
+asStatic: FALSE
