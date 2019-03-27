@@ -1,4 +1,5 @@
 library(dplyr)
+library(devtools)
     df <- readr::read_csv(here::here("data-raw", "summary.csv")) %>% 
         dplyr::rename(effect_size.drift = Drift_effect_size,
                       n = sample_size,
@@ -22,3 +23,5 @@ library(dplyr)
         use_data(powersim, overwrite = T)
 
 
+
+        
