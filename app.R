@@ -88,7 +88,8 @@ server <- function(input, output) {
                  color = "Measure") +
             #theme_hc(bgcolor = "darkunica") +
             scale_colour_hc("darkunica") + 
-            theme(axis.text = element_text(colour = "white",size=12),
+            ylim(0, 1) +
+            theme(axis.text = element_text(colour = "black",size=12),
                   panel.grid.major = element_line(colour = "grey50")#, legend.position="right"
                   ) 
             #geom_vline(xintercept = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
