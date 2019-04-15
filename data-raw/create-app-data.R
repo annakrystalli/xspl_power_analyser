@@ -1,6 +1,10 @@
 library(dplyr)
 library(devtools)
-    df <- readr::read_csv(here::here("data-raw", "summary.csv")) %>% 
+
+#summary.csv = old data 
+#summary2.csv = new data, doesn't work here for some reason?
+
+    df <- readr::read_csv(here::here("data-raw", "summary2.csv")) %>% 
         dplyr::rename(effect_size.drift = Drift_effect_size,
                       n = sample_size,
                       power.accuracy = Acsig, 
