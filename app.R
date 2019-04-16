@@ -11,6 +11,7 @@ library(shiny)
 library(tidyverse)
 library(plotly)
 library(shinydashboard)
+library(shinydashboardPlus)
 
 load(here::here("data", "powersim.rda"))
 
@@ -30,8 +31,26 @@ ui <- dashboardPage(skin = "black",
                             menuItem("Dashboard", tabName = "dashboard"),
                             menuItem("Raw data", tabName = "rawdata")
                         ),
-                        selectInput("x", "select x axis variable", choices = p$x_choices,
-                                    selected = p$x_choices["sample size"])),
+                        selectInput("x", "Select x-axis variable", choices = p$x_choices,
+                                    selected = p$x_choices["sample size"]),
+                        gradientBox(
+                            title = "About",
+                            closable = FALSE,
+                            collapsible = FALSE,
+                            boxToolSize = "lg",
+                            width=12,
+                            footer = "We simulate accuracy and reaction times for known differences between two groups. These graphs show the sensitivity (statistical power) across different sample sizes (for a known effect size), or for different effect sizes (for a known sample size). The three lines show how the sensitivity varies if you test for a difference using (just) accuracy, (just) reaction time or if you combine them using decision modelling to recover a drift pararameter",
+                            "This is a gradient box"
+                        ),
+                        gradientBox(
+                            title = "More",
+                            closable = FALSE,
+                            collapsible = FALSE,
+                            boxToolSize = "lg",
+                            width=12,
+                            footer = "Pre-print: <a href=\"\">link</a>"
+                        )
+                        ),
                     dashboardBody(
                         tabItems(
                             tabItem("dashboard",
