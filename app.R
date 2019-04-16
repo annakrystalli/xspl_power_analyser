@@ -109,7 +109,7 @@ server <- function(input, output) {
             scale_colour_hc("darkunica") + 
             ylim(0, 1) +
             theme(axis.text = element_text(colour = "black",size=12),
-                  panel.grid.major = element_line(colour = "grey50")#, legend.position="right"
+                  panel.grid.major = element_line(colour = "grey50"), legend.position=c(0.9, 0.2)
                   ) 
             #geom_vline(xintercept = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
             #                                  power=input$pwr, type="two.sample",
