@@ -124,13 +124,13 @@ server <- function(input, output) {
         
     })
     output$n <- renderValueBox({
-        valueBox(subtitle = "total minimum sample size required", color  = "teal", 
+        valueBox(subtitle = "Sample size required for 80% power", color  = "teal", 
                  value = 56,
                  icon = icon("users")
         )
     })
     output$savings <- renderValueBox({
-        valueBox(subtitle = "Savings", color  = "lime", 
+        valueBox(subtitle = "Saving", color  = "lime", 
                  value = paste("£", 10),
                  icon = icon("money")
         )
