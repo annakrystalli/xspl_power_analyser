@@ -3,6 +3,7 @@ library(devtools)
 
 #summary.csv = old data 
 #summary2.csv = new data, doesn't work here for some reason?
+#these files are the output of ddm_sims/collate.py
 
     df <- readr::read_csv(here::here("data-raw", "summary2.csv")) %>% 
         dplyr::rename(effect_size.drift = Drift_effect_size,
