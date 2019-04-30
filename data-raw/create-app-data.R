@@ -18,13 +18,17 @@ library(dplyr)
         tidyr::separate(condition, c("var", "condition"), sep = "\\.") %>%
         tidyr::spread(var, value) %>% select(-X1)
     
-    nbins_effect_size <- df %>% group_by(condition, n) %>% 
-        count() %>% pull(nn) %>% unique()
-    assertthat::assert_that(length(nbins_effect_size) == 1)
+   # nbins_effect_size <- df %>% group_by(condition, n) %>% 
+    #    count() %>% pull(nn) %>% unique()
+    #assertthat::assert_that(length(nbins_effect_size) == 1)
     
-    powersim <- df %>% group_by(condition, n) %>% 
+    powersim <- df %>%
+        mutate(condition = factor(.data$condition, 
+                                  levels = c("drift", "accuracy", "reaction_time"))) %>%
+    group_by(condition, n) %>% 
         mutate(bin = order(effect_size))
-        use_data(powersim, overwrite = T)
+        
+    use_data(powersim, overwrite = T)
 
 
 

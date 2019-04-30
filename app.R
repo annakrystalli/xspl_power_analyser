@@ -18,7 +18,11 @@ load(here::here("data", "powersim.rda"))
 p <- list(y = "power",
           x_choices = setNames(c("effect_size", "n"), c("effect size", "sample size")),
           z_choices = purrr::map(c("effect_size", "n"), ~ sort(unique(powersim[[.x]]))) %>% 
-              setNames(c("effect_size", "n"))
+              setNames(c("effect_size", "n")),
+          z_selected = setNames(c(2, 40), c("effect_size", "n")),
+          x_axis_label = setNames(c("sample size per group", "true effect in drift"), 
+                                c("effect_size", "n")),
+          box_z_var = setNames(c("effect size", "sample size"), c("effect_size", "n"))
 )
 
 
@@ -28,8 +32,8 @@ ui <- dashboardPage(skin = "black",
                                     titleWidth = 450),
                     dashboardSidebar(
                         sidebarMenu(
-                            menuItem("Dashboard", tabName = "dashboard"),
-                            menuItem("Raw data", tabName = "rawdata")
+                            menuItem("Dashboard", tabName = "dashboard")
+                            #menuItem("Raw data", tabName = "rawdata")
                         ),
                         selectInput("x", "Select x-axis variable", choices = p$x_choices,
                                     selected = p$x_choices["sample size"]),
@@ -39,8 +43,8 @@ ui <- dashboardPage(skin = "black",
                             collapsible = FALSE,
                             boxToolSize = "lg",
                             width=12,
-                            footer = "We simulate accuracy and reaction times for known differences between two groups. These graphs show the sensitivity (statistical power) across different sample sizes (for a known effect size), or for different effect sizes (for a known sample size). The three lines show how the sensitivity varies if you test for a difference using (just) accuracy, (just) reaction time or if you combine them using decision modelling to recover a drift pararameter",
-                            "This is a gradient box"
+                            p("We simulate accuracy and reaction times for known differences between two groups. These graphs show the sensitivity (statistical power) across different sample sizes (for a known effect size), or for different effect sizes (for a known sample size). The three lines show how the sensitivity varies if you test for a difference using (just) accuracy, (just) reaction time or if you combine them using decision modelling to recover a drift pararameter",
+                            "This is a gradient box",style="color:black")
                         ),
                         gradientBox(
                             title = "More",
@@ -48,7 +52,10 @@ ui <- dashboardPage(skin = "black",
                             collapsible = FALSE,
                             boxToolSize = "lg",
                             width=12,
-                            footer = "Pre-print: <a href=\"\">link</a>"
+                            p("Pre-print: ", style="color:black"),
+                            a("Quantifying the benefits of using decision models with response time
+and accuracy data", href="http://psyarxiv.com/",style="color:blue") 
+                            #footer = "Pre-print: <a href=\"\">link</a>"
                         )
                         ),
                     dashboardBody(
@@ -87,10 +94,15 @@ server <- function(input, output) {
     observe({
         v$z <- get_z()
         v$z_choices <- p$z_choices[[v$z]]
+        v$selected <- p$z_selected[[v$z]]
+        v$x_axis_label <- p$x_axis_label[[v$z]]
+        v$box_z_var <- p$box_z_var[[v$z]]
     })
     
     output$z_slider <- renderUI({
-        selectInput("z_value", paste("select", names(v$z)), choices = v$z_choices)
+        sliderInput("z_value", paste("select", names(v$z)), min = min(v$z_choices),
+                    max = max(v$z_choices), 
+                    value = v$selected, animate = T)
     })
     
     output$plot <- renderPlot({
@@ -104,13 +116,16 @@ server <- function(input, output) {
             geom_point(alpha = 1) + geom_line(alpha = 1,size=3) +
             labs(title ="",
                  subtitle = "",
-                 color = "Measure") +
+                 color = "Measure",
+                 x = v$x_axis_label) +
             #theme_hc(bgcolor = "darkunica") +
             scale_colour_hc("darkunica") + 
             ylim(0, 1) +
-            theme(axis.text = element_text(colour = "black",size=12),
-                  panel.grid.major = element_line(colour = "grey50"), legend.position=c(0.9, 0.2)
-                  ) 
+            theme(axis.text = element_text(colour = "black",size=12), 
+                  legend.text=element_text(size=14), 
+                  panel.grid.major = element_line(colour = "grey50"), legend.position=c(0.8, 0.2)
+                  ) +
+            geom_hline(yintercept = 0.8)
             #geom_vline(xintercept = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
             #                                  power=input$pwr, type="two.sample",
             #                                 alternative="two.sided")$n %>% as.integer(),
@@ -121,17 +136,19 @@ server <- function(input, output) {
             
             print(p)
         
+            v$required_n <- 56
         
     })
     output$n <- renderValueBox({
-        valueBox(subtitle = "Sample size required for 80% power", color  = "teal", 
-                 value = 56,
+        infoBox(title = v$box_z_var, 
+                subtitle = " required for 80% power", color  = "teal", 
+                 value = paste(v$required_n, "\n \n", "20"),
                  icon = icon("users")
         )
     })
     output$savings <- renderValueBox({
         valueBox(subtitle = "Saving", color  = "lime", 
-                 value = paste("£", 10),
+                 value = paste("£", v$required_n *10),
                  icon = icon("money")
         )
     })
