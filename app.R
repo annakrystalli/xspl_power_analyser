@@ -17,7 +17,7 @@ library(shinyWidgets)
 load(here::here("data", "powersim.rda"))
 
 p <- list(y = "power",
-          x_choices = setNames(c("effect_size", "n"), c("effect size", "sample size")),
+          x_choices = setNames(c("effect_size", "n"), c("true effect size", "sample size")),
           z_choices = purrr::map(c("effect_size", "n"), ~ sort(unique(powersim[[.x]]))) %>% 
               setNames(c("effect_size", "n")),
           z_selected = setNames(c(2, 40), c("effect_size", "n")),
@@ -36,26 +36,30 @@ ui <- dashboardPage(skin = "black",
                             menuItem("Dashboard", tabName = "dashboard")
                             #menuItem("Raw data", tabName = "rawdata")
                         ),
-                        selectInput("x", "Select x-axis variable", choices = p$x_choices,
+                        #selectInput("x", "Select x-axis variable", choices = p$x_choices,
+                        #                                selected = p$x_choices["sample size"]),
+                        radioButtons("x", "Select x-axis variable", choices = p$x_choices,
                                     selected = p$x_choices["sample size"]),
-                        gradientBox(
+                                    
+                    gradientBox(
                             title = "About",
                             closable = FALSE,
                             collapsible = FALSE,
                             boxToolSize = "lg",
                             width=12,
                             p("We simulate accuracy and reaction times for known differences between two groups. These graphs show the sensitivity (statistical power) across different sample sizes (for a known effect size), or for different effect sizes (for a known sample size). The three lines show how the sensitivity varies if you test for a difference using (just) accuracy, (just) reaction time or if you combine them using decision modelling to recover a drift pararameter",
-                            "This is a gradient box",style="color:black")
+                            style="color:black")
                         ),
                         gradientBox(
-                            title = "More",
+                            title = "Pre-print",
                             closable = FALSE,
                             collapsible = FALSE,
                             boxToolSize = "lg",
                             width=12,
-                            p("Pre-print: ", style="color:black"),
+                            p("PDF: ", style="color:black"),
                             a("Quantifying the benefits of using decision models with response time
-and accuracy data", href="http://psyarxiv.com/",style="color:blue") 
+                            and accuracy data", href="http://psyarxiv.com/",style="color:blue"),
+                            p("")
                             #footer = "Pre-print: <a href=\"\">link</a>"
                         )
                         ),
@@ -154,16 +158,20 @@ server <- function(input, output) {
 
     })
     output$n <- renderValueBox({
-        dft_min<-30 #hard coding until we can work out how to pass correctly from above (which uses reactive values for z)
-        acc_min<-50
-        rts_min<-min(subset(powersim, condition=="reaction_time" & n==v$z & power>0.8)$effect_size)
-        if(input$x == "n"){
-            titletext<-"Participants required"
+        if(input$x == "effect_size"){ #user selection of x-axis variable
+            titletext<-"Detectable true effect size"
+            #get minimum sample size where power above 80%
+            dft_min=min(subset(powersim, condition=="drift" & n==input$z_value & power>0.8)$effect_size)
+            acc_min=min(subset(powersim, condition=="accuracy" & n==input$z_value & power>0.8)$effect_size)
+            rts_min=min(subset(powersim, condition=="reaction_time" & n==input$z_value & power>0.8)$effect_size)
         }else{
-            titletext<-"Detectable effect size"
+            titletext<-"Total participants required"
+            #get minimum effect size where power above 80%
+            dft_min=2*min(subset(powersim, condition=="drift" & effect_size==input$z_value & power>0.8)$n)
+            acc_min=2*min(subset(powersim, condition=="accuracy" & effect_size==input$z_value & power>0.8)$n)
+            rts_min=2*min(subset(powersim, condition=="reaction_time" & effect_size==input$z_value & power>0.8)$n)
         }
-        titletext<-"!!This value should update" #delete this line when I figure it out
-        infoBox(title=paste(titletext,v$selected),
+        infoBox(title=paste(titletext),
                 subtitle = "... for 80% power", color  = "teal", 
                  value = HTML(paste(dft_min,"measuring Drift", br(), acc_min, "measuring Accuracy",br(),rts_min, "measuring Reaction Time")),
                  icon = icon("users")
