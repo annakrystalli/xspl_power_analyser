@@ -12,6 +12,7 @@ library(tidyverse)
 library(plotly)
 library(shinydashboard)
 library(shinydashboardPlus)
+library(shinyWidgets)
 
 load(here::here("data", "powersim.rda"))
 
@@ -100,9 +101,16 @@ server <- function(input, output) {
     })
     
     output$z_slider <- renderUI({
-        sliderInput("z_value", paste("select", names(v$z)), min = min(v$z_choices),
-                    max = max(v$z_choices), 
-                    value = v$selected, animate = T)
+        # sliderInput("z_value", paste("select", names(v$z)), min = min(v$z_choices),
+        #             max = max(v$z_choices), 
+        #             value = v$selected, animate = T
+        #             ,step=diff(v$z_choice)
+        #             ,round=FALSE
+        #             )
+        shinyWidgets::sliderTextInput(inputId = "z_value", 
+                                      label = paste("select", names(v$z)), 
+                                      choices = v$z_choices,
+                                      animate=T)
     })
     
     output$plot <- renderPlot({
@@ -123,9 +131,14 @@ server <- function(input, output) {
             ylim(0, 1) +
             theme(axis.text = element_text(colour = "black",size=12), 
                   legend.text=element_text(size=14), 
-                  panel.grid.major = element_line(colour = "grey50"), legend.position=c(0.8, 0.2)
+                  legend.position=c(0.8, 0.2)
+                  #,plot.background = element_blank()
+                  #,panel.grid.major = element_line(colour = "grey50"), 
+                  ,panel.grid.major = element_line(colour = "grey70")
+                  ,panel.grid.minor = element_line(colour = "grey70")
+                  #,panel.border = element_blank()
                   ) +
-            geom_hline(yintercept = 0.8)
+            geom_hline(yintercept = 0.8,linetype = "dashed")
             #geom_vline(xintercept = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
             #                                  power=input$pwr, type="two.sample",
             #                                 alternative="two.sided")$n %>% as.integer(),
