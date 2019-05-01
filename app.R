@@ -160,13 +160,13 @@ server <- function(input, output) {
     output$n <- renderValueBox({
         if(input$x == "effect_size"){ #user selection of x-axis variable
             titletext<-"Detectable true effect size"
-            #get minimum sample size where power above 80%
+            #get minimum effect size where power above 80%
             dft_min=min(subset(powersim, condition=="drift" & n==input$z_value & power>0.8)$effect_size)
             acc_min=min(subset(powersim, condition=="accuracy" & n==input$z_value & power>0.8)$effect_size)
             rts_min=min(subset(powersim, condition=="reaction_time" & n==input$z_value & power>0.8)$effect_size)
         }else{
             titletext<-"Total participants required"
-            #get minimum effect size where power above 80%
+            #get minimum sample size where power above 80%
             dft_min=2*min(subset(powersim, condition=="drift" & effect_size==input$z_value & power>0.8)$n)
             acc_min=2*min(subset(powersim, condition=="accuracy" & effect_size==input$z_value & power>0.8)$n)
             rts_min=2*min(subset(powersim, condition=="reaction_time" & effect_size==input$z_value & power>0.8)$n)
