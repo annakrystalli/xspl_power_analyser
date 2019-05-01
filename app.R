@@ -65,8 +65,9 @@ and accuracy data", href="http://psyarxiv.com/",style="color:blue")
                                     fluidRow(box(title = "Statistical power functions for different measures", background = "teal", solidHeader = TRUE,
                                                  uiOutput("z_slider"),
                                                  plotOutput("plot"), width = 10)),
-                                    fluidRow(valueBoxOutput("n", width = 5),
-                                             valueBoxOutput("savings", width = 5)))),
+                                    fluidRow(valueBoxOutput("n", width = 10)),
+                                    fluidRow(valueBoxOutput("savings", width = 10)))
+                                    ),
                         tabItem("rawdata")
                     )
 )
@@ -110,6 +111,7 @@ server <- function(input, output) {
         shinyWidgets::sliderTextInput(inputId = "z_value", 
                                       label = paste("select", names(v$z)), 
                                       choices = v$z_choices,
+                                      selected = v$selected,
                                       animate=T)
     })
     
@@ -148,21 +150,23 @@ server <- function(input, output) {
             #print(ggplotly(p, tooltip = c("n", "d", "pwr")))
             
             print(p)
-        
-            v$required_n <- 56
-        
+            
+
     })
     output$n <- renderValueBox({
-        infoBox(title = v$box_z_var, 
-                subtitle = " required for 80% power", color  = "teal", 
-                 value = paste(v$required_n, "\n \n", "20"),
+        dft_min<-30 #hard coding until we can work out how to pass correctly from above (which uses reactive values for z)
+        acc_min<-50
+        rts_min<-min(subset(powersim, condition=="reaction_time" & n==v$z & power>0.8)$effect_size)
+        if(input$x == "n"){
+            titletext<-"Participants required"
+        }else{
+            titletext<-"Detectable effect size"
+        }
+        titletext<-"!!This value should update" #delete this line when I figure it out
+        infoBox(title=paste(titletext,v$selected),
+                subtitle = "... for 80% power", color  = "teal", 
+                 value = HTML(paste(dft_min,"measuring Drift", br(), acc_min, "measuring Accuracy",br(),rts_min, "measuring Reaction Time")),
                  icon = icon("users")
-        )
-    })
-    output$savings <- renderValueBox({
-        valueBox(subtitle = "Saving", color  = "lime", 
-                 value = paste("£", v$required_n *10),
-                 icon = icon("money")
         )
     })
 }
