@@ -5,3 +5,5 @@ dev/
 R/
 ! data
 .DS_Store
+fluid*
+.Rhistory
