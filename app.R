@@ -120,7 +120,7 @@ server <- function(input, output) {
     })
     
     output$plot <- renderPlot({
-     
+        
         # generate bins based on input$bins from ui.R
         v$z_value <- input$z_value
         
@@ -158,22 +158,27 @@ server <- function(input, output) {
 
     })
     output$n <- renderValueBox({
+        
+        # get approximate x values at 0.8 power & selected z value
+        approx_80 <- powersim %>% 
+            dplyr::filter(as.character(!!as.name(v$z)) == as.character(v$z_value)) %>%
+            split(.$condition) %>%
+            purrr::map_df(~ approx(y = .x[[input$x]], 
+                                   x = .x$power, xout = 0.8) %>% .$y)
+        
         if(input$x == "effect_size"){ #user selection of x-axis variable
             titletext<-"Detectable true effect size"
-            #get minimum effect size where power above 80%
-            dft_min=min(subset(powersim, condition=="drift" & n==input$z_value & power>0.8)$effect_size)
-            acc_min=min(subset(powersim, condition=="accuracy" & n==input$z_value & power>0.8)$effect_size)
-            rts_min=min(subset(powersim, condition=="reaction_time" & n==input$z_value & power>0.8)$effect_size)
+            approx_80 <- round(approx_80, 1)
         }else{
             titletext<-"Total participants required"
-            #get minimum sample size where power above 80%
-            dft_min=2*min(subset(powersim, condition=="drift" & effect_size==input$z_value & power>0.8)$n)
-            acc_min=2*min(subset(powersim, condition=="accuracy" & effect_size==input$z_value & power>0.8)$n)
-            rts_min=2*min(subset(powersim, condition=="reaction_time" & effect_size==input$z_value & power>0.8)$n)
+            approx_80 <- round(approx_80, 0)
         }
+        
         infoBox(title=paste(titletext),
                 subtitle = "... for 80% power", color  = "teal", 
-                 value = HTML(paste(dft_min,"measuring Drift", br(), acc_min, "measuring Accuracy",br(),rts_min, "measuring Reaction Time")),
+                 value = HTML(paste(approx_80$drift, em("measuring Drift"), br(), 
+                                    approx_80$accuracy, em("measuring Accuracy"),br(),
+                                    approx_80$reaction_time, em("measuring Reaction Time"))),
                  icon = icon("users")
         )
     })
