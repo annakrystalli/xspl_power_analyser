@@ -94,7 +94,7 @@ server <- function(input, output) {
     v <- reactiveValues(
         z = "effect_size",
         z_choices = p$z_choices[["effect_size"]],
-        z_value = 3
+        z_value = 2
     )
     
     observe({
@@ -120,7 +120,7 @@ server <- function(input, output) {
     })
     
     output$plot <- renderPlot({
-        
+        shiny::req(input$z_value)
         # generate bins based on input$bins from ui.R
         v$z_value <- input$z_value
         
@@ -158,7 +158,7 @@ server <- function(input, output) {
 
     })
     output$n <- renderValueBox({
-        
+        shiny::req(input$z_value)
         # get approximate x values at 0.8 power & selected z value
         approx_80 <- powersim %>% 
             dplyr::filter(as.character(!!as.name(v$z)) == as.character(v$z_value)) %>%
