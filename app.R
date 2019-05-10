@@ -219,9 +219,11 @@ server <- function(input, output) {
     if(input$x == "effect_size"){ #user selection of x-axis variable
       v$titletext<-"Minimal detectable true effect size"
       v$approx_80 <- round(v$approx_80, 1)
+      v$icon <- icon("search-minus")
     }else{
       v$titletext<-"Total participants required"
       v$approx_80 <- round(v$approx_80, 0)
+      v$icon <- icon("users")
     }
   })
   
@@ -253,7 +255,7 @@ server <- function(input, output) {
             value = HTML(paste(v$approx_80$drift, em("measuring Drift"), br(), 
                                v$approx_80$accuracy, em("measuring Accuracy"),br(),
                                v$approx_80$`reaction time`, em("measuring Reaction Time"))),
-            icon = icon("users")
+            icon = v$icon
     )
   })
   
