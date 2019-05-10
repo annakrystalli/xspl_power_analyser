@@ -37,6 +37,9 @@ mycss <- "
 .input {
   background: red;
 }
+a {
+    color: #38CBCC;
+}
 "
 
 p <- list(y = "power",
