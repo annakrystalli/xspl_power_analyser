@@ -49,7 +49,7 @@ p <- list(y = "power",
           box_z_var = setNames(c("effect size", "sample size"), c("effect_size", "n"))
 )
 
-### function to detect mobile ####
+### function to detect mobile #### approach source: https://github.com/g3rv4/mobileDetect
 mobileDetect <- function(inputId, value = 0) {
   tagList(
     singleton(tags$head(tags$script(src = "js/mobile.js"))),
@@ -72,9 +72,6 @@ ui <- tagList(
                             menuItem("Dashboard", tabName = "dashboard"),
                             menuItem("Raw data", tabName = "rawdata")
                         ),
-                        #selectInput("x", "Select x-axis variable", choices = p$x_choices,
-                        #                                selected = p$x_choices["sample size"]),
-                                    
                     gradientBox(
                             title = "About",
                             closable = FALSE,
@@ -94,7 +91,6 @@ ui <- tagList(
                             em(a("Quantifying the benefits of using decision models with response time
                             and accuracy data", href="http://psyarxiv.com/",style="color:red;font-weight:bold")),
                             p("")
-                            #footer = "Pre-print: <a href=\"\">link</a>"
                         ),
                     div(
                         id = "logo-tuos",
@@ -108,7 +104,6 @@ ui <- tagList(
                             tabItem("dashboard",
                                     box(title = strong("Statistical power functions for different measures"), background = "black", 
                                         style="background:#222D31",
-                                        #ßßhr(),
                                         tags$style(mycss),
                                         fluidRow(column(3, radioButtons("x", 
                                                                         h4(strong("select x-axis variable")), 
@@ -208,6 +203,7 @@ server <- function(input, output) {
     
     output$plot <- renderPlot({
         shiny::req(input$z_value)
+      
         # generate bins based on input$bins from ui.R
         v$z_value <- input$z_value
         
@@ -223,22 +219,8 @@ server <- function(input, output) {
             scale_colour_hc("darkunica") + 
             ylim(0, 1) +
             theme(axis.text = element_text(colour = "black",size=12), 
-                  legend.text=element_text(size=14) 
-                  #legend.position=c(0.8, 0.2)
-                  #,plot.background = element_blank()
-                  #,panel.grid.major = element_line(colour = "grey50"), 
-                 # ,panel.grid.major = element_line(colour = "grey70")
-                  #,panel.grid.minor = element_line(colour = "grey70")
-                  #,panel.border = element_blank()
-                  ) +
+                  legend.text=element_text(size=14)) +
             geom_hline(yintercept = 0.8,linetype = "dashed")
-            #geom_vline(xintercept = pwr.t.test(n = NULL, d = input$d, sig.level = 0.05, 
-            #                                  power=input$pwr, type="two.sample",
-            #                                 alternative="two.sided")$n %>% as.integer(),
-            #          colour = "white")
-            
-            
-            #print(ggplotly(p, tooltip = c("n", "d", "pwr")))
             
         if(input$isMobile){
           p <- p + theme(legend.position="bottom", legend.box = "horizontal")
@@ -251,7 +233,6 @@ server <- function(input, output) {
         shiny::req(v$z)
         shiny::req(v$z_value)
         
-        # get approximate x values at 0.8 power & selected z value
         get_approx_80()
         
         infoBox(title = paste(v$titletext),
