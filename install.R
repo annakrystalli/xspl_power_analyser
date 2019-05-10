@@ -1,0 +1,8 @@
+install.packages("DT")
+install.packages("ggthemes")
+install.packages("shiny")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("shinydashboard")
+install.packages("shinydashboardPlus")
+install.packages("shinyWidgets")
