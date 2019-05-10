@@ -8,7 +8,8 @@
 #
 library(ggthemes)
 library(shiny)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinyWidgets)
@@ -119,17 +120,18 @@ ui <- tagList(
                   
                 )
   ),#end dashboardPage
-  tags$footer(tags$p("MIT, Copyright: Anna Krystalli", 
+  tags$footer(tags$p("Copyright ", icon(name = "cr", class = "fa-copyright")," 2019",
+                     em(" Anna Krystalli"), 
                      tags$a(href="https://twitter.com/annakrystalli",
                             icon(name = "ak-twitter", class = "fa-twitter")),
                      tags$a(href="https://github.com/annakrystalli",
                             icon(name = "ak-gh", class = "fa-github-alt")),
-                     " & Tom Stafford", 
+                     " & ", em("Tom Stafford"), 
                      tags$a(href="https://twitter.com/tomstafford",
                             icon(name = "ts-twitter", class = "fa-twitter")),
                      tags$a(href="https://github.com/tomstafford",
                             icon(name = "ts-gh", class = "fa-github-alt")),
-                     "DOI:", 
+                     "(MIT) - DOI:", 
                      tags$a(href="10.15131/shef.data.8109161", "10.15131/shef.data.8109161"),
                      tags$a(href="https://github.com/annakrystalli/xspl_power_analyser",
                             icon(name = "sc-gh", class = "fa-github"))), 
