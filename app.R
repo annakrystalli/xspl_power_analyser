@@ -51,7 +51,8 @@ p <- list(y = "power",
 
 
 # Define UI for application that draws a histogram
-ui <- dashboardPage(skin = "red", title = "Enhanced sensitivity to group differences with decision modelling",
+ui <- tagList(
+  dashboardPage(skin = "red", title = "Enhanced sensitivity to group differences with decision modelling",
                     dashboardHeader(title = strong("Enhanced sensitivity to group differences with decision modelling"),
                                     titleWidth = 800),
                     dashboardSidebar(width = 350,
@@ -111,7 +112,31 @@ ui <- dashboardPage(skin = "red", title = "Enhanced sensitivity to group differe
                         )
                     
 )
+),#end dashboardPage
+tags$footer(tags$p("MIT, Copyright: Anna Krystalli", 
+                   tags$a(href="https://twitter.com/annakrystalli",
+                   icon(name = "ak-twitter", class = "fa-twitter")),
+                   tags$a(href="https://github.com/annakrystalli",
+                   icon(name = "ak-gh", class = "fa-github-alt")),
+                   " & Tom Stafford", 
+                   tags$a(href="https://twitter.com/tomstafford",
+                          icon(name = "ts-twitter", class = "fa-twitter")),
+                   tags$a(href="https://github.com/tomstafford",
+                          icon(name = "ts-gh", class = "fa-github-alt")),
+                   "DOI:", 
+                   tags$a(href="10.15131/shef.data.8109161", "10.15131/shef.data.8109161"),
+                   tags$a(href="https://github.com/annakrystalli/xspl_power_analyser",
+                          icon(name = "sc-gh", class = "fa-github"))), 
+              align = "center", style = "
+              bottom:0;
+              width:100%;
+              height:50px;   /* Height of the footer */
+              color: white;
+              padding: 10px;
+              background-color: #222D31;
+              z-index: 1000;")
 )
+
 
 
 # Define server logic required to draw a histogram
