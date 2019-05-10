@@ -116,7 +116,14 @@ ui <- dashboardPage(skin = "red", title = "Enhanced sensitivity to group differe
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-    
+    # create reactive values vector
+  v <- reactiveValues(
+    z = "effect_size",
+    z_choices = p$z_choices[["effect_size"]],
+    z_value = 2
+  )
+  
+  # ---- Define reactive functionality ----
     get_z <- reactive({
         p$x_choices[input$x  != p$x_choices]
     })
@@ -127,11 +134,21 @@ server <- function(input, output) {
             filter((!!rlang::sym(col)) == v$z_value)
     })
     
-    v <- reactiveValues(
-        z = "effect_size",
-        z_choices = p$z_choices[["effect_size"]],
-        z_value = 2
-    )
+    get_approx_80 <- eventReactive({v$z
+                                   v$z_value},{ 
+      v$approx_80 <- subset_dat() %>%
+        split(.$condition) %>%
+        purrr::map_df(~ approx(y = .x[[input$x]], 
+                               x = .x$power, xout = 0.8) %>% .$y)
+      
+      if(input$x == "effect_size"){ #user selection of x-axis variable
+        v$titletext<-"Minimal detectable true effect size"
+        v$approx_80 <- round(v$approx_80, 1)
+      }else{
+        v$titletext<-"Total participants required"
+        v$approx_80 <- round(v$approx_80, 0)
+      }
+    })
     
     observe({
         v$z <- get_z()
@@ -140,14 +157,10 @@ server <- function(input, output) {
         v$x_axis_label <- p$x_axis_label[[v$z]]
         v$box_z_var <- p$box_z_var[[v$z]]
     })
-    
+ 
+    # ---- Define outputs ----   
     output$z_slider <- renderUI({
-        # sliderInput("z_value", paste("select", names(v$z)), min = min(v$z_choices),
-        #             max = max(v$z_choices), 
-        #             value = v$selected, animate = T
-        #             ,step=diff(v$z_choice)
-        #             ,round=FALSE
-        #             )
+
         shinyWidgets::sliderTextInput(inputId = "z_value", 
                                       label = h4(strong(paste("select", names(v$z)))), 
                                       choices = v$z_choices,
@@ -197,25 +210,15 @@ server <- function(input, output) {
         shiny::req(input$x)
         shiny::req(v$z)
         shiny::req(v$z_value)
+        
         # get approximate x values at 0.8 power & selected z value
-        approx_80 <- subset_dat() %>%
-            split(.$condition) %>%
-            purrr::map_df(~ approx(y = .x[[input$x]], 
-                                   x = .x$power, xout = 0.8) %>% .$y)
+        get_approx_80()
         
-        if(input$x == "effect_size"){ #user selection of x-axis variable
-            titletext<-"Detectable true effect size"
-            approx_80 <- round(approx_80, 1)
-        }else{
-            titletext<-"Total participants required"
-            approx_80 <- round(approx_80, 0)
-        }
-        
-        infoBox(title=paste(titletext),
+        infoBox(title = paste(v$titletext),
                 subtitle = "... for 80% power", color  = "teal", 
-                 value = HTML(paste(approx_80$drift, em("measuring Drift"), br(), 
-                                    approx_80$accuracy, em("measuring Accuracy"),br(),
-                                    approx_80$`reaction time`, em("measuring Reaction Time"))),
+                 value = HTML(paste(v$approx_80$drift, em("measuring Drift"), br(), 
+                                    v$approx_80$accuracy, em("measuring Accuracy"),br(),
+                                    v$approx_80$`reaction time`, em("measuring Reaction Time"))),
                  icon = icon("users")
         )
     })
