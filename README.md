@@ -11,5 +11,11 @@ The code associated with the application is contained in the `app.R` script.
 The data powering the app is a subset of the data presented in the paper and can be found in `data/powersim.rda`. 
 
 The raw subset of the data is contained in `raw-data/summary.csv` and the processing code into the tidied `.rda` format can be found in `raw-data/create-app-data.R`.
-                            
+
+### Licenses
+
+**Code :** See the [LICENSE](LICENSE) file
+
+**Data :** [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/),
+Copyright (c) 2018 Tom Stafford.
                 
