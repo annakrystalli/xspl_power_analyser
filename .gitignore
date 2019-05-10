@@ -1,9 +1,4 @@
-packrat/lib*/
 .Rproj.user
-inst/doc
-dev/
-R/
-! data
 .DS_Store
-fluid*
 .Rhistory
+rsconnect/*
