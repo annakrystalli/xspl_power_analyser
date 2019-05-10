@@ -9,12 +9,11 @@
 library(ggthemes)
 library(shiny)
 library(tidyverse)
-library(plotly)
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinyWidgets)
 
-load(here::here("data", "powersim.rda"))
+load("data/powersim.rda")
 
 # define slider css (see: https://stackoverflow.com/questions/47116236/change-colour-for-sliderinput)
 mycss <- "
@@ -156,17 +155,18 @@ server <- function(input, output) {
   )
   
   # ---- Define reactive functionality ----
+  # get z variable in response to selected x
   get_z <- reactive({
     p$x_choices[input$x  != p$x_choices]
   })
   
+  # subset data according to z value 
   subset_dat <- reactive({
-    col <- if(v$z == "effect_size"){v$z}else{v$z}
     powersim %>%  
-      filter((!!rlang::sym(col)) == v$z_value)
+      filter((!!rlang::sym(v$z)) == v$z_value)
   })
   
-  
+  # update settings in respons to change in x
   observeEvent(input$x, {
     v$z <- get_z()
     v$z_choices <- p$z_choices[[v$z]]
@@ -175,12 +175,13 @@ server <- function(input, output) {
     v$box_z_var <- p$box_z_var[[v$z]]
   })
   
+  # update settings in respons to change in z_value
   observeEvent(input$z_value, {
     v$z_value <- input$z_value
     v$data <- subset_dat()
   })
   
-  
+  # plot in response to change in data subset
   plot_data <- eventReactive(v$data,{
     
     p <- v$data %>%
@@ -204,6 +205,7 @@ server <- function(input, output) {
     print(p)
   })
   
+  # get 0.8 power approximation in response to change in data subset
   get_approx_80 <- eventReactive({v$data},{ 
     v$approx_80 <- v$data %>%
       split(.$condition) %>%
@@ -232,7 +234,6 @@ server <- function(input, output) {
   
   output$plot <- renderPlot({
     shiny::req(v$data)
-    
     plot_data()
   })
   
