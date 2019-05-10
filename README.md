@@ -6,7 +6,7 @@
 
 Interactive web application accompanying paper ***"Quantifying the benefits of using decision models with response time and accuracy data"***
 
-The code associated with the application is contained in the `app.R` script. 
+The code associated with the application is contained in the `app.R` script. Dependencies are specified in `install.R` and can be installed by sourcing the script.
 
 The data powering the app is a subset of the data presented in the paper and can be found in `data/powersim.rda`. 
 
