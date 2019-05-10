@@ -49,9 +49,21 @@ p <- list(y = "power",
           box_z_var = setNames(c("effect size", "sample size"), c("effect_size", "n"))
 )
 
+### function to detect mobile ####
+mobileDetect <- function(inputId, value = 0) {
+  tagList(
+    singleton(tags$head(tags$script(src = "js/mobile.js"))),
+    tags$input(id = inputId,
+               class = "mobile-element",
+               type = "hidden")
+  )
+}
+
+
 
 # Define UI for application that draws a histogram
 ui <- tagList(
+  mobileDetect('isMobile'),
   dashboardPage(skin = "red", title = "Enhanced sensitivity to group differences with decision modelling",
                     dashboardHeader(title = strong("Enhanced sensitivity to group differences with decision modelling"),
                                     titleWidth = 800),
@@ -228,6 +240,9 @@ server <- function(input, output) {
             
             #print(ggplotly(p, tooltip = c("n", "d", "pwr")))
             
+        if(input$isMobile){
+          p <- p + theme(legend.position="bottom", legend.box = "horizontal")
+        }
             print(p)
     })
     
