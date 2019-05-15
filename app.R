@@ -225,7 +225,7 @@ server <- function(input, output) {
       v$icon <- icon("search-minus")
     }else{
       v$titletext<-"Total participants required"
-      v$approx_80 <- round(v$approx_80, 0)
+      v$approx_80 <- round(v$approx_80, 0) * 2
       v$icon <- icon("users")
     }
   })
