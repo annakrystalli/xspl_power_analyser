@@ -40,6 +40,42 @@ mycss <- "
 a {
     color: #38CBCC;
 }
+.skin-blue .main-header .navbar, 
+.skin-blue .main-header .logo{
+  background: #38CBCC;
+  color: #222d32;
+}
+
+@media (max-width: 767px){
+  .main-header {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  max-height: 150px;
+  }
+  
+  .content-wrapper{
+  padding-top: 150px; 
+  }
+
+  .main-header .logo {
+  height: 100px;
+  line-height:45px; 
+  }
+
+}
+
+@media (min-width: 768px){
+  .main-header {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  }
+  
+  .content-wrapper{
+  padding-top: 50px; 
+  }
+}
 "
 
 p <- list(y = "power",
@@ -67,7 +103,7 @@ mobileDetect <- function(inputId, value = 0) {
 # Define UI for application that draws a histogram
 ui <- tagList(
   mobileDetect('isMobile'),
-  dashboardPage(skin = "red", title = "Enhanced sensitivity to group differences with decision modelling",
+  dashboardPage(skin = "blue", title = "Enhanced sensitivity to group differences with decision modelling",
                 dashboardHeader(title = strong("Enhanced sensitivity to group differences with decision modelling"),
                                 titleWidth = 800),
                 dashboardSidebar(width = 350,
