@@ -43,7 +43,7 @@ a {
 "
 
 p <- list(y = "power",
-          x_choices = setNames(c("effect_size", "n"), c("true effect size", "sample size")),
+          x_choices = setNames(c("effect_size", "n"), c("true effect size", "sample size per group")),
           z_choices = purrr::map(c("effect_size", "n"), ~ sort(unique(powersim[[.x]]))) %>% 
             setNames(c("effect_size", "n")),
           z_selected = setNames(c(2, 40), c("effect_size", "n")),
@@ -111,7 +111,7 @@ ui <- tagList(
                                 fluidRow(column(3, radioButtons("x", 
                                                                 h4(strong("select x-axis variable")), 
                                                                 choices = p$x_choices,
-                                                                selected = p$x_choices["sample size"])),
+                                                                selected = p$x_choices["sample size per group"])),
                                          column(8, uiOutput("z_slider"))), 
                                 width = 10),
                             box(title = "", background = "teal", solidHeader = TRUE,
