@@ -128,7 +128,7 @@ ui <- tagList(
                                    width=12,
                                    p("PDF: ", style="color:black"),
                                    em(a("Quantifying the benefits of using decision models with response time
-                            and accuracy data", href="http://psyarxiv.com/",style="color:red;font-weight:bold")),
+                            and accuracy data", href="https://psyarxiv.com/pn7g6",style="color:red;font-weight:bold")),
                                    p("")
                                  ),
                                  div(
