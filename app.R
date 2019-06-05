@@ -173,7 +173,7 @@ ui <- tagList(
                      tags$a(href="https://github.com/tomstafford",
                             icon(name = "ts-gh", class = "fa-github-alt")),
                      " - DOI:", 
-                     tags$a(href="10.15131/shef.data.8109161", "10.15131/shef.data.8109161"),
+                     tags$a(href="https://doi.org/10.15131/shef.data.8109161", "10.15131/shef.data.8109161"),
                      tags$a(href="https://github.com/annakrystalli/xspl_power_analyser",
                             icon(name = "sc-gh", class = "fa-github"))), 
               align = "center", style = "
