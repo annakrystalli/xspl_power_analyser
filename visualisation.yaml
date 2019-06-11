@@ -6,7 +6,7 @@ visualisations:
     creators:
     - Anna Krystalli
     - Tom Stafford
-    description: Experimental measurements of the half-life of thorium samples over time.
-    thumbnail: https://example.com/visualisation/1.thumbnail.png
-    source_code: https://github.com/example/visualisation
+    description: Interactive web application accompanying paper "Quantifying the benefits of using decision models with response time and accuracy data".
+    thumbnail: https://github.com/annakrystalli/xspl_power_analyser/blob/master/thumbnail.png?raw=true
+    source_code: https://github.com/annakrystalli/xspl_power_analyser
 ---
