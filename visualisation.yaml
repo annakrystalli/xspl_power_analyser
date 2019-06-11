@@ -1,0 +1,12 @@
+---
+visualisations:
+  - url: https://sheffield-university.shinyapps.io/decision_power/
+    type: embed
+    title: Interactive App - Enhanced sensitivity to group differences with decision modelling
+    creators:
+    - Anna Krystalli
+    - Tom Stafford
+    description: Experimental measurements of the half-life of thorium samples over time.
+    thumbnail: https://example.com/visualisation/1.thumbnail.png
+    source_code: https://github.com/example/visualisation
+---
