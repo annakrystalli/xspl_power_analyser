@@ -117,8 +117,9 @@ ui <- tagList(
                                    collapsible = FALSE,
                                    boxToolSize = "lg",
                                    width=12,
-                                   p("We simulate accuracy and reaction times for known differences between two groups. These graphs show the sensitivity (statistical power) across different sample sizes (for a known effect size), or for different effect sizes (for a known sample size). The three lines show how the sensitivity varies if you test for a difference using (just) accuracy, (just) reaction time or if you combine them using decision modelling to recover a drift pararameter",
-                                     style="color:black")
+                                   p("We simulate accuracy and reaction times for known differences between two groups. These graphs show the sensitivity (statistical power) across different sample sizes (for a known effect size), or for different effect sizes (for a known sample size). The three lines show how the sensitivity varies if you test for a difference using (just) accuracy, (just) reaction time or if you combine them using decision modelling to recover a drift pararameter.",
+                                     style="color:black"),
+                                   p("All effect sizes are Cohen's d", style="color:black")
                                  ),
                                  gradientBox(
                                    title = "Pre-print",
@@ -290,7 +291,7 @@ server <- function(input, output) {
     get_approx_80()
     
     infoBox(title = paste(v$titletext),
-            subtitle = "... for 80% power", color  = "teal", 
+            subtitle = "... for 80% power (NA indicates 80% power has not been reached)", color  = "teal", 
             value = HTML(paste(v$approx_80$drift, em("measuring Drift"), br(), 
                                v$approx_80$accuracy, em("measuring Accuracy"),br(),
                                v$approx_80$`reaction time`, em("measuring Reaction Time"))),
